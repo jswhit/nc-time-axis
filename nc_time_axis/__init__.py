@@ -153,16 +153,18 @@ class NetCDFTimeDateLocator(mticker.Locator):
             # TODO START AT THE BEGINNING OF A DECADE/CENTURY/MILLENIUM as
             # appropriate.
             years = self._max_n_locator.tick_values(lower.year, upper.year)
-            ticks = [cftime.datetime(int(year), 1, 1) for year in years]
+            ticks = []
+            for year in years:
+                ticks.append(cftime.datetime(int(year), 1, 1, calendar=None))
         elif resolution == 'MONTHLY':
             # TODO START AT THE BEGINNING OF A DECADE/CENTURY/MILLENIUM as
             # appropriate.
             months_offset = self._max_n_locator.tick_values(0, n)
             ticks = []
             for offset in months_offset:
-                year = lower.year + np.floor((lower.month + offset) / 12)
-                month = ((lower.month + offset) % 12) + 1
-                ticks.append(cftime.datetime(int(year), int(month), 1))
+                year = int(lower.year + np.floor((lower.month + offset) / 12))
+                month = int(((lower.month + offset) % 12) + 1)
+                ticks.append(cftime.datetime(year, month, 1, calendar=None))
         elif resolution == 'DAILY':
             # TODO: It would be great if this favoured multiples of 7.
             days = self._max_n_locator_days.tick_values(vmin, vmax)
